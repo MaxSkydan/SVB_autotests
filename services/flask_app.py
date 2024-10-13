@@ -31,6 +31,29 @@ def app() -> Flask:
             ]
             flask_event.set()  # Устанавливаем событие после обработки
             return jsonify(response), 200
+        elif (data["sender"] == "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739" and
+              data["message"] == "Показники лічильників."):
+            response = [
+                {
+                    "text": "я не можу з цим допомогти , запитайте щось інше",
+                    "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"
+                },
+                {
+                    "text": "#FILE:greeting",
+                    "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"
+                 }
+            ]
+            flask_event.set()  # Устанавливаем событие после обработки
+            return jsonify(response), 200
+        elif data["sender"] == "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739" and data["message"] == "Error":
+            response = [
+                {
+                    "text": None,
+                    "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"
+                }
+            ]
+            flask_event.set()  # Устанавливаем событие после обработки
+            return jsonify(response), 200
         return jsonify([]), 400
 
 
