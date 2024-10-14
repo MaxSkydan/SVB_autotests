@@ -44,6 +44,7 @@ def setup_docker():
             "RABBITMQ_USERNAME": RABBITMQ_USER,
             "RABBITMQ_PASSWORD": RABBITMQ_PASSWORD
         },
+        hostname=CONTAINER_NAME_NLU,
         detach=True
     )
 

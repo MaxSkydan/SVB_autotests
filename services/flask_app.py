@@ -54,6 +54,57 @@ def app() -> Flask:
             ]
             flask_event.set()  # Устанавливаем событие после обработки
             return jsonify(response), 200
+        elif data["sender"] == "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739" and data["message"] == "#COMMAND:ERROR":
+            response = [
+                {
+                    "text": "#COMMAND:ERROR",
+                    "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"
+                }
+            ]
+            flask_event.set()  # Устанавливаем событие после обработки
+            return jsonify(response), 200
+        elif (data["sender"] == "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739" and
+              data["message"] == "На все добре. До побачення"):
+            response = [
+                {
+                    "text": "Приємно було спілкуватись",
+                    "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"
+                },
+                {
+                    "text": "#COMMAND:END_CALL",
+                    "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"
+                }
+            ]
+            flask_event.set()  # Устанавливаем событие после обработки
+            return jsonify(response), 200
+        elif (data["sender"] == "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739" and
+              data["message"] == "Щось нове та цікаве"):
+            response = [
+                {
+                    "text": "Я вас не розумію. Перевожу на оператора",
+                    "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"
+                },
+                {
+                    "text": "#COMMAND:REDIRECT_CALL:7777",
+                    "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"
+                }
+            ]
+            flask_event.set()  # Устанавливаем событие после обработки
+            return jsonify(response), 200
+        elif (data["sender"] == "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739" and
+              data["message"] == "Переведи мене на оператора"):
+            response = [
+                {
+                    "text": "Добре. Перевожу на оператора",
+                    "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"
+                },
+                {
+                    "text": "#COMMAND:USER_REDIRECT_CALL",
+                    "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"
+                }
+            ]
+            flask_event.set()  # Устанавливаем событие после обработки
+            return jsonify(response), 200
         return jsonify([]), 400
 
 
