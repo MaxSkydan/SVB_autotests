@@ -9,7 +9,7 @@
   "speechServiceRtpPort": 16384,
   "asteriskAriProxyHostName": "svb-asterisk",
   "asteriskRtpPort": 31056,
-  "message": "Показники лічильників.",
+  "message": "Де подивитись гарний фільм?",
   "script": null,
   "isUninterruptible": null,
   "project": {

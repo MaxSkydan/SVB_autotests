@@ -1,5 +1,9 @@
 flask
 pika
 pytest
+pytest-sugar
+pytest-progress
+pytest-instafail
+pytest-testrail
 docker
 requests
