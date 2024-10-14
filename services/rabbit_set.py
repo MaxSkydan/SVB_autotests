@@ -71,7 +71,7 @@ def setup_rabbitmq(channel):
     channel.queue_bind(exchange=EXCHANGE_RESPONSE, queue=QUEUE_RESPONSE, routing_key=ROUTING_KEY_RESPONSE)
 
 # Функция для отправки тестового сообщения в RabbitMQ
-def send_message_to_rabbitmq(file_path):
+def send_message_to_rabbitmq(file_path, routing_key=ROUTING_KEY_REQUEST):
     connection, channel = connect_to_rabbitmq()
     setup_rabbitmq(channel)  # Убедиться, что обмен и очередь существуют
 
@@ -89,32 +89,7 @@ def send_message_to_rabbitmq(file_path):
 
     channel.basic_publish(
         exchange=EXCHANGE_INIT,
-        routing_key=ROUTING_KEY_REQUEST,
-        body=json.dumps(message),
-        properties=properties
-    )
-
-    connection.close()
-
-def send_message_to_rabbitmq_start_call(file_path):
-    connection, channel = connect_to_rabbitmq()
-    setup_rabbitmq(channel)  # Убедиться, что обмен и очередь существуют
-
-    with open(file_path, 'r', encoding='utf-8') as file:
-        data = json.load(file)
-
-    message = data
-
-    properties = pika.BasicProperties(
-        content_type='application/json',
-        content_encoding='UTF-8',
-        delivery_mode=2,
-        headers={'__TypeId__': 'com.smiddle.svb.common.core.model.event.RouterEvent'}
-    )
-
-    channel.basic_publish(
-        exchange=EXCHANGE_INIT,
-        routing_key=ROUTING_KEY_INIT,
+        routing_key=routing_key,
         body=json.dumps(message),
         properties=properties
     )
