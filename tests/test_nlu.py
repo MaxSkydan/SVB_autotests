@@ -9,7 +9,7 @@ from services.rabbit_set import *
 @pytest.mark.usefixtures("setup_docker", "app")
 def test_nlu_start_call():
     # Отправляем тестовое сообщение через RabbitMQ
-    send_message_to_rabbitmq("testdata/nlu/start_call.json")
+    send_message_to_rabbitmq_start_call("testdata/nlu/start_call.json")
 
     # Ждем, пока событие на Flask не сработает
     flask_event.wait(timeout=10)
