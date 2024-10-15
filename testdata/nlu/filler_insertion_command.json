@@ -1,0 +1,12 @@
+{
+  "eventType" : "SPEECH_RECOGNIZED",
+  "sessionId" : "d8bd8e5f-f309-4c13-a569-11c12cfc4b31",
+  "ani" : "7739",
+  "message" : "Хочу дізнатися про вашу систему запису",
+  "project" : {
+    "nluType" : "RASA",
+    "nluConfig" : {
+      "URL": "http://10.100.90.25:5005"
+    }
+  }
+}

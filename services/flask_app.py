@@ -1,6 +1,7 @@
 import json
 import pytest
 import time
+import requests
 from flask import Flask, request, jsonify
 from threading import Event, Thread
 
@@ -15,6 +16,10 @@ def send_response(response_data):
     flask_event.set()  # Устанавливаем событие после обработки
     return jsonify(response_data), 200
 
+def send_post_request(response_data):
+    requests.post('http://localhost:8804/command/rasa', json=response_data)
+    return jsonify(response_data), 200
+
 
 @pytest.fixture(scope='session', autouse=True)
 def app() -> Flask:
@@ -27,13 +32,18 @@ def app() -> Flask:
     def rasa_webhook():
         data = request.json
 
+        with open("testdata/response_flask_data/rasa/response_map.json", 'r') as file:
+            response_map = json.load(file)
+
         # Проверяем sender и находим соответствующий ответ по message
-        if data.get("sender") == SENDER_ID:
+        if data.get("sender") != SENDER_ID:
             message = data.get("message")
-            with open("testdata/response_flask_data/rasa/response_map.json", 'r') as file:
-                data = json.load(file)
-            if message in data:
-                return send_response(data[message])
+            if message in response_map:
+                return send_post_request(response_map[message])
+        else:
+            message = data.get("message")
+            if message in response_map:
+                return send_response(response_map[message])
 
         return jsonify([]), 400
 

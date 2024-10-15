@@ -133,5 +133,21 @@ def test_nlu_beep_command():
     assert (response["script"][0]["type"] == "TEXT" and
             response["script"][0]["value"] == "Назвіть останні цифри лічильника після звукового сигналу")
 
+
+@pytestrail.case('C2325', 'C2342', 'C2347')
+def test_nlu_filler_insertion_command():
+    send_message_to_rabbitmq("testdata/nlu/filler_insertion_command.json")
+
+    flask_event.wait(timeout=10)
+
+    response = listen_for_response()
+
+    assert response is not None
+    assert response["eventType"] == "FILLER_INSERTION"
+    assert (response["script"][0]["type"] == "TEXT" and
+            response["script"][0]["value"] == "Дякую за запитання. Спробую Вам відповісти на нього.")
+    assert response["isUninterruptible"] is True
+
+
 if __name__ == "__main__":
     pytest.main([__file__])
