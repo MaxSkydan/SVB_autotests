@@ -1,0 +1,35 @@
+{
+    "#COMMAND:START_CALL": [
+        {"text": "Hello, I speak Ukrainian and English, how can I help you?", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"},
+        {"text": "#UNINTERRUPTIBLE", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"}
+    ],
+    "Де подивитись гарний фільм?": [
+        {"text": "я не можу з цим допомогти , запитайте щось інше", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"},
+        {"text": "#FILE:greeting", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"}
+    ],
+    "Error": [
+        {"text": null, "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"}
+    ],
+    "#COMMAND:ERROR": [
+        {"text": "#COMMAND:ERROR", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"}
+    ],
+    "На все добре. До побачення": [
+        {"text": "Приємно було спілкуватись", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"},
+        {"text": "#COMMAND:END_CALL", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"}
+    ],
+    "Щось нове та цікаве": [
+        {"text": "Я вас не розумію. Перевожу на оператора", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"},
+        {"text": "#COMMAND:REDIRECT_CALL:7777", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"}
+    ],
+    "Переведи мене на оператора": [
+        {"text": "Добре. Перевожу на оператора", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"},
+        {"text": "#COMMAND:USER_REDIRECT_CALL", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"}
+    ],
+    "#COMMAND:END_CALL": [
+        {"text": "#COMMAND:END_CALL", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"}
+    ],
+    "Лічильник": [
+        {"text": "Назвіть останні цифри лічильника після звукового сигналу", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"},
+        {"text": "#COMMAND:BEEP", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"}
+    ]
+}

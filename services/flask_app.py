@@ -1,5 +1,6 @@
-import time
+import json
 import pytest
+import time
 from flask import Flask, request, jsonify
 from threading import Event, Thread
 
@@ -8,49 +9,11 @@ from threading import Event, Thread
 flask_event = Event()
 
 SENDER_ID = "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"
-RECIPIENT_ID = "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"
 
 # Общая функция для формирования ответа и установки события
 def send_response(response_data):
     flask_event.set()  # Устанавливаем событие после обработки
     return jsonify(response_data), 200
-
-# Словарь для маппинга сообщений на соответствующие ответы
-response_map = {
-    "#COMMAND:START_CALL": [
-        {"text": "Hello, I speak Ukrainian and English, how can I help you?", "recipient_id": RECIPIENT_ID},
-        {"text": "#UNINTERRUPTIBLE", "recipient_id": RECIPIENT_ID}
-    ],
-    "Де подивитись гарний фільм?": [
-        {"text": "я не можу з цим допомогти , запитайте щось інше", "recipient_id": RECIPIENT_ID},
-        {"text": "#FILE:greeting", "recipient_id": RECIPIENT_ID}
-    ],
-    "Error": [
-        {"text": None, "recipient_id": RECIPIENT_ID}
-    ],
-    "#COMMAND:ERROR": [
-        {"text": "#COMMAND:ERROR", "recipient_id": RECIPIENT_ID}
-    ],
-    "На все добре. До побачення": [
-        {"text": "Приємно було спілкуватись", "recipient_id": RECIPIENT_ID},
-        {"text": "#COMMAND:END_CALL", "recipient_id": RECIPIENT_ID}
-    ],
-    "Щось нове та цікаве": [
-        {"text": "Я вас не розумію. Перевожу на оператора", "recipient_id": RECIPIENT_ID},
-        {"text": "#COMMAND:REDIRECT_CALL:7777", "recipient_id": RECIPIENT_ID}
-    ],
-    "Переведи мене на оператора": [
-        {"text": "Добре. Перевожу на оператора", "recipient_id": RECIPIENT_ID},
-        {"text": "#COMMAND:USER_REDIRECT_CALL", "recipient_id": RECIPIENT_ID}
-    ],
-    "#COMMAND:END_CALL": [
-        {"text": "#COMMAND:END_CALL", "recipient_id": RECIPIENT_ID}
-    ],
-    "Лічильник": [
-        {"text": "Назвіть останні цифри лічильника після звукового сигналу", "recipient_id": RECIPIENT_ID},
-        {"text": "#COMMAND:BEEP", "recipient_id": RECIPIENT_ID}
-    ]
-}
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -67,8 +30,10 @@ def app() -> Flask:
         # Проверяем sender и находим соответствующий ответ по message
         if data.get("sender") == SENDER_ID:
             message = data.get("message")
-            if message in response_map:
-                return send_response(response_map[message])
+            with open("testdata/response_flask_data/rasa/response_map.json", 'r') as file:
+                data = json.load(file)
+            if message in data:
+                return send_response(data[message])
 
         return jsonify([]), 400
 
