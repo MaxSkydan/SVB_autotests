@@ -11,7 +11,7 @@ from pytest_testrail.plugin import pytestrail
 @pytestrail.case('C2313', 'C2314', 'C2316', 'C2317', 'C2322', 'C2330', 'C2335', 'C2343', 'C2344')
 def test_nlu_start_call():
     # Отправляем тестовое сообщение через RabbitMQ
-    send_message_to_rabbitmq("testdata/nlu/start_call.json", routing_key=ROUTING_KEY_INIT)
+    send_message_to_rabbitmq("testdata/nlu/start_call.json")
 
     # Ждем, пока событие на Flask не сработает
     flask_event.wait(timeout=10)

@@ -106,3 +106,39 @@ def setup_nlu_proxy_docker(setup_rabbitmq_docker):
 
      nlu_proxy_container.stop()
      nlu_proxy_container.remove()
+
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_audit_docker(setup_rabbitmq_docker):
+     client = docker.from_env()
+
+     # Запуск тестируемого сервиса
+     audit_container = client.containers.run(
+         DOCKER_IMAGE_AUDIT,
+         name=CONTAINER_NAME_AUDIT,
+         ports={"8080/tcp": 8805},
+         environment={
+             "RABBITMQ_ADDRESSES": f"{RABBITMQ_HOST}:{RABBITMQ_PORT}",
+             "RABBITMQ_USERNAME": RABBITMQ_USER,
+             "RABBITMQ_PASSWORD": RABBITMQ_PASSWORD
+         },
+         hostname=CONTAINER_NAME_NLU,
+         detach=True
+     )
+
+     if wait_for_service_ready(8805):
+         print("Сервис успешно запущен и готов к работе.")
+     else:
+         print("Не удалось дождаться готовности сервиса. Проверьте настройки и состояние контейнера.")
+         audit_container.stop()
+         audit_container.remove()
+
+         pytest.fail("Сервис не удалось подготовиться за отведенное время.")
+
+     yield
+
+     # Остановка и удаление контейнера после тестов
+
+     audit_container.stop()
+     audit_container.remove()
