@@ -11,7 +11,7 @@ from pytest_testrail.plugin import pytestrail
 @pytestrail.case('C2313', 'C2314', 'C2316', 'C2317', 'C2322', 'C2330', 'C2335', 'C2343', 'C2344')
 def test_nlu_start_call():
     # Отправляем тестовое сообщение через RabbitMQ
-    send_message_to_rabbitmq("testdata/nlu/start_call.json")
+    send_message_to_rabbitmq("testdata/nlu_proxy/start_call.json")
 
     # Ждем, пока событие на Flask не сработает
     flask_event.wait(timeout=10)
@@ -29,7 +29,7 @@ def test_nlu_start_call():
 
 @pytestrail.case('C2315', 'C2318', 'C2323', 'C2331', 'C2333', 'C2336', 'C2346')
 def test_nlu_2_types_response():
-    send_message_to_rabbitmq("testdata/nlu/speach_call.json")
+    send_message_to_rabbitmq("testdata/nlu_proxy/speach_call.json")
 
     flask_event.wait(timeout=10)
 
@@ -46,7 +46,7 @@ def test_nlu_2_types_response():
 
 @pytestrail.case('C2319')
 def test_nlu_error_request():
-    send_message_to_rabbitmq("testdata/nlu/error_request.json")
+    send_message_to_rabbitmq("testdata/nlu_proxy/error_request.json")
 
     flask_event.wait(timeout=10)
 
@@ -57,7 +57,7 @@ def test_nlu_error_request():
 
 @pytestrail.case('C2320')
 def test_nlu_end_call_request():
-    send_message_to_rabbitmq("testdata/nlu/end_call_request.json")
+    send_message_to_rabbitmq("testdata/nlu_proxy/end_call_request.json")
 
     flask_event.wait(timeout=10)
 
@@ -68,7 +68,7 @@ def test_nlu_end_call_request():
 
 @pytestrail.case('C2321', 'C2329', 'C2334', 'C2338')
 def test_nlu_error_response():
-    send_message_to_rabbitmq("testdata/nlu/error_response.json")
+    send_message_to_rabbitmq("testdata/nlu_proxy/error_response.json")
 
     flask_event.wait(timeout=10)
 
@@ -80,7 +80,7 @@ def test_nlu_error_response():
 
 @pytestrail.case('C2328', 'C2337')
 def test_nlu_end_call_response():
-    send_message_to_rabbitmq("testdata/nlu/goodbye.json")
+    send_message_to_rabbitmq("testdata/nlu_proxy/goodbye.json")
 
     flask_event.wait(timeout=10)
 
@@ -93,7 +93,7 @@ def test_nlu_end_call_response():
 
 @pytestrail.case('C2326', 'C2332', 'C2339', 'C2345')
 def test_nlu_redirect_call():
-    send_message_to_rabbitmq("testdata/nlu/redirect_call.json")
+    send_message_to_rabbitmq("testdata/nlu_proxy/redirect_call.json")
 
     flask_event.wait(timeout=10)
 
@@ -108,7 +108,7 @@ def test_nlu_redirect_call():
 
 @pytestrail.case('C2327', 'C2340')
 def test_nlu_user_redirect_call():
-    send_message_to_rabbitmq("testdata/nlu/user_redirect_call.json")
+    send_message_to_rabbitmq("testdata/nlu_proxy/user_redirect_call.json")
 
     flask_event.wait(timeout=10)
 
@@ -122,7 +122,7 @@ def test_nlu_user_redirect_call():
 
 @pytestrail.case('C2324', 'C2341')
 def test_nlu_beep_command():
-    send_message_to_rabbitmq("testdata/nlu/beep_command.json")
+    send_message_to_rabbitmq("testdata/nlu_proxy/beep_command.json")
 
     flask_event.wait(timeout=10)
 
@@ -136,7 +136,7 @@ def test_nlu_beep_command():
 
 @pytestrail.case('C2325', 'C2342', 'C2347')
 def test_nlu_filler_insertion_command():
-    send_message_to_rabbitmq("testdata/nlu/filler_insertion_command.json")
+    send_message_to_rabbitmq("testdata/nlu_proxy/filler_insertion_command.json")
 
     flask_event.wait(timeout=10)
 
@@ -151,7 +151,7 @@ def test_nlu_filler_insertion_command():
 
 @pytestrail.case('C2348', 'C2350')
 def test_nlu_missing_number():
-    send_message_to_rabbitmq("testdata/nlu/missing_number.json")
+    send_message_to_rabbitmq("testdata/nlu_proxy/missing_number.json")
 
     flask_event.wait(timeout=10)
 
@@ -164,7 +164,7 @@ def test_nlu_missing_number():
 
 @pytestrail.case('C2349')
 def test_nlu_empty_string_response():
-    send_message_to_rabbitmq("testdata/nlu/empty_string.json")
+    send_message_to_rabbitmq("testdata/nlu_proxy/empty_string.json")
 
     flask_event.wait(timeout=10)
 

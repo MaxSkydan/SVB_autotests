@@ -36,7 +36,7 @@ def wait_for_service_ready(port):
 
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def setup_rabbitmq_docker():
     client = docker.from_env()
 
@@ -73,7 +73,7 @@ def setup_rabbitmq_docker():
 
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def setup_nlu_proxy_docker(setup_rabbitmq_docker):
      client = docker.from_env()
 
@@ -109,7 +109,7 @@ def setup_nlu_proxy_docker(setup_rabbitmq_docker):
 
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def setup_audit_docker(setup_rabbitmq_docker):
      client = docker.from_env()
 

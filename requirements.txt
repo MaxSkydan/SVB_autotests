@@ -7,3 +7,4 @@ pytest-instafail
 pytest-testrail
 docker
 requests
+mysql-connector
