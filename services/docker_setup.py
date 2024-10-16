@@ -9,9 +9,9 @@ from requests.exceptions import RequestException
 
 
 # Проверка готовности сервиса с таймаутом
-def wait_for_service_ready():
+def wait_for_service_ready(port):
     # Определяем параметры опроса сервиса
-    health_check_url = f"http://{HOST}:8804/actuator/health"  # Эндпоинт для проверки готовности сервиса
+    health_check_url = f"http://{HOST}:{port}/actuator/health"  # Эндпоинт для проверки готовности сервиса
     timeout = 30  # Общее время ожидания в секундах
     interval = 1  # Интервал между попытками опроса в секундах
 
@@ -91,7 +91,7 @@ def setup_nlu_proxy_docker(setup_rabbitmq_docker):
          detach=True
      )
 
-     if wait_for_service_ready():
+     if wait_for_service_ready(8804):
          print("Сервис успешно запущен и готов к работе.")
      else:
          print("Не удалось дождаться готовности сервиса. Проверьте настройки и состояние контейнера.")
