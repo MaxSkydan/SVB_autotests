@@ -149,5 +149,34 @@ def test_nlu_filler_insertion_command():
     assert response["isUninterruptible"] is True
 
 
+@pytestrail.case('C2348', 'C2350')
+def test_nlu_missing_number():
+    send_message_to_rabbitmq("testdata/nlu/missing_number.json")
+
+    flask_event.wait(timeout=10)
+
+    response = listen_for_response()
+
+    assert response is not None
+    assert response["eventType"] == "RESPONSE_GENERATED"
+    assert response ["hostname"] == "svb-nlu-proxy"
+
+
+@pytestrail.case('C2349')
+def test_nlu_empty_string_response():
+    send_message_to_rabbitmq("testdata/nlu/empty_string.json")
+
+    flask_event.wait(timeout=10)
+
+    response = listen_for_response()
+
+    assert response is not None
+    assert response["eventType"] == "RESPONSE_GENERATED"
+    assert (response["script"][0]["type"] == "TEXT" and
+            response["script"][0]["value"] == "")
+    assert (response["script"][1]["type"] == "FILE" and
+            response["script"][1]["value"] == "greeting")
+
+
 if __name__ == "__main__":
     pytest.main([__file__])
