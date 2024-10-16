@@ -35,8 +35,9 @@ def wait_for_service_ready():
     return False
 
 
+
 @pytest.fixture(scope="session", autouse=True)
-def setup_docker():
+def setup_rabbitmq_docker():
     client = docker.from_env()
 
     # Запуск контейнера RabbitMQ
@@ -63,37 +64,45 @@ def setup_docker():
         rabbitmq_container.remove()
         pytest.fail("RabbitMQ не удалось подготовиться за отведенное время.")
 
-    # Запуск тестируемого сервиса
-    test_service_container = client.containers.run(
-        DOCKER_IMAGE_NLU,
-        name=CONTAINER_NAME_NLU,
-        ports={"8080/tcp": 8804},
-        environment={
-            "RABBITMQ_ADDRESSES": f"{RABBITMQ_HOST}:{RABBITMQ_PORT}",
-            "RABBITMQ_USERNAME": RABBITMQ_USER,
-            "RABBITMQ_PASSWORD": RABBITMQ_PASSWORD
-        },
-        hostname=CONTAINER_NAME_NLU,
-        detach=True
-    )
-
-    if wait_for_service_ready():
-        print("Сервис успешно запущен и готов к работе.")
-    else:
-        print("Не удалось дождаться готовности сервиса. Проверьте настройки и состояние контейнера.")
-        test_service_container.stop()
-        test_service_container.remove()
-        rabbitmq_container.stop()
-        rabbitmq_container.remove()
-
-        pytest.fail("Сервис не удалось подготовиться за отведенное время.")
-
-
     yield
 
-    # Остановка и удаление контейнеров после тестов
+    # Остановка и удаление контейнерf после тестов
 
-    test_service_container.stop()
-    test_service_container.remove()
     rabbitmq_container.stop()
     rabbitmq_container.remove()
+
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_nlu_proxy_docker(setup_rabbitmq_docker):
+     client = docker.from_env()
+
+     # Запуск тестируемого сервиса
+     nlu_proxy_container = client.containers.run(
+         DOCKER_IMAGE_NLU,
+         name=CONTAINER_NAME_NLU,
+         ports={"8080/tcp": 8804},
+         environment={
+             "RABBITMQ_ADDRESSES": f"{RABBITMQ_HOST}:{RABBITMQ_PORT}",
+             "RABBITMQ_USERNAME": RABBITMQ_USER,
+             "RABBITMQ_PASSWORD": RABBITMQ_PASSWORD
+         },
+         hostname=CONTAINER_NAME_NLU,
+         detach=True
+     )
+
+     if wait_for_service_ready():
+         print("Сервис успешно запущен и готов к работе.")
+     else:
+         print("Не удалось дождаться готовности сервиса. Проверьте настройки и состояние контейнера.")
+         nlu_proxy_container.stop()
+         nlu_proxy_container.remove()
+
+         pytest.fail("Сервис не удалось подготовиться за отведенное время.")
+
+     yield
+
+     # Остановка и удаление контейнера после тестов
+
+     nlu_proxy_container.stop()
+     nlu_proxy_container.remove()

@@ -1,13 +1,13 @@
 import pytest
 from services.flask_app import flask_event, app
-from services.docker_setup import setup_docker
+from services.docker_setup import setup_rabbitmq_docker, setup_nlu_proxy_docker
 from services.rabbit_set import *
 from pytest_testrail.plugin import pytestrail
 
 
 
 # Автотест для проверки всей цепочки обработки
-@pytest.mark.usefixtures("setup_docker", "app")
+@pytest.mark.usefixtures("setup_nlu_proxy_docker", "app")
 @pytestrail.case('C2313', 'C2314', 'C2316', 'C2317', 'C2322', 'C2330', 'C2335', 'C2343', 'C2344')
 def test_nlu_start_call():
     # Отправляем тестовое сообщение через RabbitMQ
