@@ -3,8 +3,10 @@ import pytest
 import time
 import requests
 from config.settings import *
+from services.db_utils import *
 from services.rabbit_set import is_rabbitmq_ready_amqp
 from requests.exceptions import RequestException
+from influxdb_client import InfluxDBClient
 
 
 
@@ -34,6 +36,42 @@ def wait_for_service_ready(port):
     print("Время ожидания истекло, сервис не готов.")
     return False
 
+
+@pytest.fixture(scope='module')
+def mysql_connection(setup_mysql_container):
+    # Подключаемся к базе данных MySQL
+    connection = None
+    for _ in range(10):  # Пробуем несколько раз, пока база не станет доступна
+        try:
+            connection = mysql.connector.connect(
+                host="127.0.0.1",
+                port=3306,
+                user="root",
+                password="root_password",
+                database="smiddle"
+            )
+            print("Подключение к базе данных MySQL успешно установлено!")
+            break
+        except mysql.connector.Error as e:
+            print(f"Ошибка подключения: {e}")  # Выводим ошибку для отладки
+            time.sleep(2)
+
+    if connection is None:
+        pytest.fail("Не удалось подключиться к базе данных")
+
+    # Создаем пользователя и таблицы
+    cursor = connection.cursor()
+    cursor.execute("CREATE USER 'test_user'@'%' IDENTIFIED BY 'test_password';")
+    cursor.execute("GRANT ALL PRIVILEGES ON smiddle.* TO 'test_user'@'%';")
+    ##### тут добавляем таблицы неободимые сервису, спросить у Олексея
+    # cursor.execute("CREATE TABLE IF NOT EXISTS test_table (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100));")
+    #####
+    connection.commit()
+
+    yield connection
+
+    # Закрываем соединение
+    connection.close()
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -70,6 +108,97 @@ def setup_rabbitmq_docker():
 
     rabbitmq_container.stop()
     rabbitmq_container.remove()
+
+
+@pytest.fixture(scope='module')
+def setup_mysql_container():
+    client = docker.from_env()
+
+    # Поднимаем контейнер с MySQL
+    mysql_container = client.containers.run(
+        'mysql:latest',
+        environment={
+            'MYSQL_ROOT_PASSWORD': 'root_password',
+            'MYSQL_DATABASE': 'smiddle'
+        },
+        ports={'3306/tcp': 3306},
+        detach=True
+    )
+
+    # Ожидаем, пока MySQL полностью запустится
+    for _ in range(10):  # Пробуем несколько раз
+        try:
+            connection = mysql.connector.connect(
+                host="127.0.0.1",
+                port=3306,
+                user="root",
+                password="root_password",
+                database="smiddle"
+            )
+            connection.close()
+            break
+        except mysql.connector.Error:
+            time.sleep(2)
+
+    yield mysql_container
+
+    # Останавливаем и удаляем контейнер после тестов
+    mysql_container.stop()
+    mysql_container.remove()
+
+
+@pytest.fixture(scope='module')
+def setup_influxdb_container():
+    client = docker.from_env()
+
+    # Запускаем контейнер с InfluxDB
+    influxdb_container = client.containers.run(
+        'influxdb:latest',
+        environment={
+            'DOCKER_INFLUXDB_INIT_MODE': 'setup',
+            'DOCKER_INFLUXDB_INIT_USERNAME': 'admin',
+            'DOCKER_INFLUXDB_INIT_PASSWORD': 'password',
+            'DOCKER_INFLUXDB_INIT_ORG': INFLUXDB_ORG,
+            'DOCKER_INFLUXDB_INIT_BUCKET': INFLUXDB_BUCKET,
+            'DOCKER_INFLUXDB_INIT_ADMIN_TOKEN': INFLUXDB_TOKEN,
+        },
+        ports={'8086/tcp': 8086},
+        detach=True
+    )
+
+    # Ожидаем, пока InfluxDB полностью запустится
+    time.sleep(20)
+
+    yield influxdb_container
+
+    # Останавливаем и удаляем контейнер после тестов
+    influxdb_container.stop()
+    influxdb_container.remove()
+
+
+@pytest.fixture(scope='module')
+def influxdb_connection(setup_influxdb_container):
+    # Пробуем подключиться к InfluxDB
+    client = None
+    for _ in range(10):  # Пробуем несколько раз, пока база не станет доступна
+        try:
+            client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG)
+            # Проверяем успешность подключения
+            health = client.ping()
+            if health:
+                print("Подключение к базе данных InfluxDB успешно установлено!")
+                break
+        except Exception as e:
+            print(f"Ошибка подключения: {e}")  # Выводим ошибку для отладки
+            time.sleep(2)
+
+    if client is None:
+        pytest.fail("Не удалось подключиться к базе данных InfluxDB")
+
+    yield client
+
+    # Закрываем соединение после тестов
+    client.close()
 
 
 
@@ -110,7 +239,7 @@ def setup_nlu_proxy_docker(setup_rabbitmq_docker):
 
 
 @pytest.fixture(scope="module", autouse=True)
-def setup_audit_docker(setup_rabbitmq_docker):
+def setup_audit_docker(setup_rabbitmq_docker, mysql_connection, influxdb_connection):
      client = docker.from_env()
 
      # Запуск тестируемого сервиса
@@ -121,9 +250,18 @@ def setup_audit_docker(setup_rabbitmq_docker):
          environment={
              "RABBITMQ_ADDRESSES": f"{RABBITMQ_HOST}:{RABBITMQ_PORT}",
              "RABBITMQ_USERNAME": RABBITMQ_USER,
-             "RABBITMQ_PASSWORD": RABBITMQ_PASSWORD
+             "RABBITMQ_PASSWORD": RABBITMQ_PASSWORD,
+             "INFLUX_URL": INFLUXDB_URL,
+             "INFLUX_TOKEN": INFLUXDB_TOKEN,
+             "INFLUX_ORG": INFLUXDB_ORG,
+             "INFLUX_BUCKET": INFLUXDB_BUCKET,
+             "DATABASE_URL": DATABASE_URL,
+             "DATABASE_USERNAME": DATABASE_USERNAME,
+             "DATABASE_PASSWORD": DATABASE_PASSWORD,
+             "DATABASE_DRIVER": DATABASE_DRIVER,
+             "DATABASE_DIALECT": DATABASE_DIALECT
          },
-         hostname=CONTAINER_NAME_NLU,
+         hostname=CONTAINER_NAME_AUDIT,
          detach=True
      )
 
@@ -131,14 +269,14 @@ def setup_audit_docker(setup_rabbitmq_docker):
          print("Сервис успешно запущен и готов к работе.")
      else:
          print("Не удалось дождаться готовности сервиса. Проверьте настройки и состояние контейнера.")
-         audit_container.stop()
-         audit_container.remove()
+         # audit_container.stop()
+         # audit_container.remove()
 
          pytest.fail("Сервис не удалось подготовиться за отведенное время.")
 
      yield
 
      # Остановка и удаление контейнера после тестов
-
-     audit_container.stop()
-     audit_container.remove()
+     #
+     # audit_container.stop()
+     # audit_container.remove()

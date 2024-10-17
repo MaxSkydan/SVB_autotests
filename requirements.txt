@@ -7,4 +7,5 @@ pytest-instafail
 pytest-testrail
 docker
 requests
-mysql-connector
+mysql-connector-python
+influxdb_client
