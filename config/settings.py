@@ -29,7 +29,7 @@ INFLUXDB_TOKEN = "my_token"
 INFLUXDB_URL = "http://10.100.90.25:8086"
 
 #MYSQL
-DATABASE_URL="jdbc:mysql://10.100.90.25:3306/smiddle?useSSL=false&rewriteBatchedStatements=true"
+DATABASE_URL="jdbc:mysql://10.100.90.25:3306/SMIDDLE?useSSL=false&rewriteBatchedStatements=true"
 DATABASE_USERNAME='root'
 DATABASE_PASSWORD='root_password'
 DATABASE_DRIVER='com.mysql.cj.jdbc.Driver'

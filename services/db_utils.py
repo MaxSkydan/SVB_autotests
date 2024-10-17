@@ -9,42 +9,8 @@ database_config = {
     'user': DATABASE_USERNAME,
     'password': DATABASE_PASSWORD,
     'host': '127.0.0.1',
-    'database': 'smiddle'
+    'database': 'SMIDDLE'
 }
-
-@pytest.fixture(scope='module')
-def mysql_connection(mysql_container):
-    # Подключаемся к базе данных MySQL
-    connection = None
-    for _ in range(10):  # Пробуем несколько раз, пока база не станет доступна
-        try:
-            connection = mysql.connector.connect(
-                host="127.0.0.1",
-                port=3306,
-                user="root",
-                password="root_password",
-                database="smiddle"
-            )
-            break
-        except mysql.connector.Error:
-            time.sleep(2)
-
-    if connection is None:
-        pytest.fail("Не удалось подключиться к базе данных")
-
-    # Создаем пользователя и таблицы
-    cursor = connection.cursor()
-    cursor.execute("CREATE USER 'test_user'@'%' IDENTIFIED BY 'test_password';")
-    cursor.execute("GRANT ALL PRIVILEGES ON smiddle.* TO 'test_user'@'%';")
-    ##### тут добавляем таблицы неободимые сервису, спросить у Олексея
-    # cursor.execute("CREATE TABLE IF NOT EXISTS test_table (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100));")
-    #####
-    connection.commit()
-
-    yield connection
-
-    # Закрываем соединение
-    connection.close()
 
 
 def execute_query(query: str) -> List[Tuple]:

@@ -18,6 +18,7 @@ def test_audit_income_call():
         sql = file.read()
     query = sql
     result = execute_query(query)
+    print(result)
 
     # Проверяем корректность ответа
     assert result is not None
