@@ -121,8 +121,8 @@ def setup_influxdb_container():
         'influxdb:latest',
         environment={
             'DOCKER_INFLUXDB_INIT_MODE': 'setup',
-            'DOCKER_INFLUXDB_INIT_USERNAME': 'admin',
-            'DOCKER_INFLUXDB_INIT_PASSWORD': 'password',
+            'DOCKER_INFLUXDB_INIT_USERNAME': INFLUXDB_USERNAME,
+            'DOCKER_INFLUXDB_INIT_PASSWORD': INFLUXDB_PASSWORD,
             'DOCKER_INFLUXDB_INIT_ORG': INFLUXDB_ORG,
             'DOCKER_INFLUXDB_INIT_BUCKET': INFLUXDB_BUCKET,
             'DOCKER_INFLUXDB_INIT_ADMIN_TOKEN': INFLUXDB_TOKEN,

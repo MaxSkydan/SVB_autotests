@@ -27,6 +27,8 @@ INFLUXDB_ORG = "my_org"
 INFLUXDB_BUCKET = "my_bucket"
 INFLUXDB_TOKEN = "my_token"
 INFLUXDB_URL = f"http://{HOST}:8086"
+INFLUXDB_USERNAME='admin'
+INFLUXDB_PASSWORD='password'
 
 #MYSQL
 DATABASE_URL=f"jdbc:mysql://{HOST}:3306/SMIDDLE?useSSL=false&rewriteBatchedStatements=true"
