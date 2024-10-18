@@ -13,6 +13,8 @@ def test_audit_income_call():
     # Отправляем тестовое сообщение через RabbitMQ
     send_message_to_rabbitmq("testdata/audit/income_call.json")
 
+    time.sleep(2)
+
     # Проверяем данные в MySQL
     with open('testdata/audit/sql/income_call.sql', 'r') as file:
         sql = file.read()

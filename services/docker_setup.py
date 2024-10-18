@@ -79,10 +79,11 @@ def setup_mysql_container():
 
     # Поднимаем контейнер с MySQL
     mysql_container = client.containers.run(
-        'mysql:latest',
+        'mysql:8.0',
         environment={
             'MYSQL_ROOT_PASSWORD': 'root_password',
-            'MYSQL_DATABASE': 'SMIDDLE'
+            'MYSQL_DATABASE': 'SMIDDLE',
+            'MYSQL_ROOT_HOST': '%'
         },
         ports={'3306/tcp': 3306},
         detach=True
@@ -268,6 +269,7 @@ def setup_audit_docker(setup_rabbitmq_docker, setup_mysql_container, setup_influ
 
      if wait_for_service_ready(8805):
          print("Сервис успешно запущен и готов к работе.")
+         requests.post('http://localhost:8805/actuator/loggers/com.smiddle', json={"configuredLevel": "DEBUG"})
      else:
          print("Не удалось дождаться готовности сервиса. Проверьте настройки и состояние контейнера.")
          audit_container.stop()

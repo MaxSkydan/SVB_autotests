@@ -9,6 +9,7 @@ database_config = {
     'user': DATABASE_USERNAME,
     'password': DATABASE_PASSWORD,
     'host': '127.0.0.1',
+    'port': 3306,
     'database': 'SMIDDLE'
 }
 
@@ -28,7 +29,7 @@ def execute_query(query: str) -> List[Tuple]:
             cursor.execute(query)
 
             # Fetch all results
-            result = cursor.fetchall()
+            result = cursor.fetchone()
 
         # Commit the transaction
         conn.commit()
