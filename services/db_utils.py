@@ -27,7 +27,7 @@ def execute_query_mysql(query: str) -> List[Tuple]:
             cursor.execute(query)
 
             # Fetch all results
-            result = cursor.fetchone()
+            result = cursor.fetchall()
 
         # Commit the transaction
         conn.commit()
