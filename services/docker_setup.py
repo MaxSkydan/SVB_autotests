@@ -216,7 +216,8 @@ def setup_audit_docker(setup_rabbitmq_docker, setup_mysql_container, setup_influ
 
      if wait_for_service_ready(8805):
          print("Сервис успешно запущен и готов к работе.")
-         requests.post('http://localhost:8805/actuator/loggers/com.smiddle', json={"configuredLevel": "DEBUG"})
+         # Запрос на включение Debug режима
+         # requests.post('http://localhost:8805/actuator/loggers/com.smiddle', json={"configuredLevel": "DEBUG"})
      else:
          print("Не удалось дождаться готовности сервиса. Проверьте настройки и состояние контейнера.")
          audit_container.stop()
