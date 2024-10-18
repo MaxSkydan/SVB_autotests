@@ -68,7 +68,6 @@ def setup_rabbitmq_docker():
     yield
 
     # Остановка и удаление контейнерf после тестов
-
     rabbitmq_container.stop()
     rabbitmq_container.remove()
 
@@ -100,53 +99,17 @@ def setup_mysql_container():
                 database="SMIDDLE"
             )
             connection.close()
+            print("Подключение к базе данных MySQL успешно установлено!")
             break
-        except mysql.connector.Error:
-            time.sleep(2)
+        except mysql.connector.Error as e:
+             print(f"Ошибка подключения: {e}")  # Выводим ошибку для отладки
+             time.sleep(2)
 
     yield mysql_container
 
     # Останавливаем и удаляем контейнер после тестов
     mysql_container.stop()
     mysql_container.remove()
-
-
-# @pytest.fixture(scope='module', autouse=True)
-# def mysql_connection(setup_mysql_container):
-#     # Подключаемся к базе данных MySQL
-#     connection = None
-#     for _ in range(10):  # Пробуем несколько раз, пока база не станет доступна
-#         try:
-#             connection = mysql.connector.connect(
-#                 host="127.0.0.1",
-#                 port=3306,
-#                 user="root",
-#                 password="root_password",
-#                 database="SMIDDLE"
-#             )
-#             print("Подключение к базе данных MySQL успешно установлено!")
-#             break
-#         except mysql.connector.Error as e:
-#             print(f"Ошибка подключения: {e}")  # Выводим ошибку для отладки
-#             time.sleep(2)
-#
-#     if connection is None:
-#         pytest.fail("Не удалось подключиться к базе данных")
-#
-#     # Создаем пользователя и таблицы
-#     cursor = connection.cursor()
-#     cursor.execute("CREATE USER 'test_user'@'%' IDENTIFIED BY 'test_password';")
-#     cursor.execute("GRANT ALL PRIVILEGES ON SMIDDLE.* TO 'test_user'@'%';")
-#     ##### тут добавляем таблицы неободимые сервису, спросить у Олексея
-#     # cursor.execute("CREATE TABLE IF NOT EXISTS test_table (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100));")
-#     #####
-#     connection.commit()
-#
-#     yield connection
-#
-#     # Закрываем соединение
-#     connection.close()
-
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -169,39 +132,24 @@ def setup_influxdb_container():
     )
 
     # Ожидаем, пока InfluxDB полностью запустится
-    time.sleep(20)
+    for _ in range(10):  # Пробуем несколько раз, пока база не станет доступна
+        try:
+            connect = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG)
+            # Проверяем успешность подключения
+            health = client.ping()
+            if health:
+                connect.close()
+                print("Подключение к базе данных InfluxDB успешно установлено!")
+                break
+        except Exception as e:
+                print(f"Ошибка подключения: {e}")  # Выводим ошибку для отладки
+                time.sleep(2)
 
     yield influxdb_container
 
     # Останавливаем и удаляем контейнер после тестов
     influxdb_container.stop()
     influxdb_container.remove()
-
-
-# @pytest.fixture(scope='module', autouse=True)
-# def influxdb_connection(setup_influxdb_container):
-#     # Пробуем подключиться к InfluxDB
-#     client = None
-#     for _ in range(10):  # Пробуем несколько раз, пока база не станет доступна
-#         try:
-#             client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG)
-#             # Проверяем успешность подключения
-#             health = client.ping()
-#             if health:
-#                 print("Подключение к базе данных InfluxDB успешно установлено!")
-#                 break
-#         except Exception as e:
-#             print(f"Ошибка подключения: {e}")  # Выводим ошибку для отладки
-#             time.sleep(2)
-#
-#     if client is None:
-#         pytest.fail("Не удалось подключиться к базе данных InfluxDB")
-#
-#     yield client
-#
-#     # Закрываем соединение после тестов
-#     client.close()
-
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -234,7 +182,6 @@ def setup_nlu_proxy_docker(setup_rabbitmq_docker):
      yield
 
      # Остановка и удаление контейнера после тестов
-
      nlu_proxy_container.stop()
      nlu_proxy_container.remove()
 
@@ -280,6 +227,5 @@ def setup_audit_docker(setup_rabbitmq_docker, setup_mysql_container, setup_influ
      yield
 
      # Остановка и удаление контейнера после тестов
-     #
      audit_container.stop()
      audit_container.remove()
