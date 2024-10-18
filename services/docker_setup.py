@@ -2,8 +2,8 @@ import docker
 import pytest
 import time
 import requests
+import mysql.connector
 from config.settings import *
-from services.db_utils import *
 from services.rabbit_set import is_rabbitmq_ready_amqp
 from requests.exceptions import RequestException
 from influxdb_client import InfluxDBClient
@@ -80,8 +80,8 @@ def setup_mysql_container():
     mysql_container = client.containers.run(
         'mysql:8.0',
         environment={
-            'MYSQL_ROOT_PASSWORD': 'root_password',
-            'MYSQL_DATABASE': 'SMIDDLE',
+            'MYSQL_ROOT_PASSWORD': DATABASE_PASSWORD,
+            'MYSQL_DATABASE': DATABASE_NAME,
             'MYSQL_ROOT_HOST': '%'
         },
         ports={'3306/tcp': 3306},
@@ -92,11 +92,11 @@ def setup_mysql_container():
     for _ in range(10):  # Пробуем несколько раз
         try:
             connection = mysql.connector.connect(
-                host="127.0.0.1",
+                host=HOST,
                 port=3306,
-                user="root",
-                password="root_password",
-                database="SMIDDLE"
+                user=DATABASE_USERNAME,
+                password=DATABASE_PASSWORD,
+                database=DATABASE_NAME
             )
             connection.close()
             print("Подключение к базе данных MySQL успешно установлено!")
@@ -217,7 +217,7 @@ def setup_audit_docker(setup_rabbitmq_docker, setup_mysql_container, setup_influ
      if wait_for_service_ready(8805):
          print("Сервис успешно запущен и готов к работе.")
          # Запрос на включение Debug режима
-         # requests.post('http://localhost:8805/actuator/loggers/com.smiddle', json={"configuredLevel": "DEBUG"})
+         # requests.post(f'http://{HOST}:8805/actuator/loggers/com.smiddle', json={"configuredLevel": "DEBUG"})
      else:
          print("Не удалось дождаться готовности сервиса. Проверьте настройки и состояние контейнера.")
          audit_container.stop()

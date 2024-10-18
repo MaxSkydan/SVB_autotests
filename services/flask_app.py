@@ -4,6 +4,7 @@ import time
 import requests
 from flask import Flask, request, jsonify
 from threading import Event, Thread
+from config.settings import *
 
 
 # Событие для синхронизации завершения обработки запроса
@@ -16,8 +17,8 @@ def send_response(response_data):
     flask_event.set()  # Устанавливаем событие после обработки
     return jsonify(response_data), 200
 
-def send_post_request(response_data):
-    requests.post('http://localhost:8804/command/rasa', json=response_data)
+def send_post_request(url, response_data):
+    requests.post(url, json=response_data)
     return jsonify(response_data), 200
 
 
@@ -28,6 +29,7 @@ def app() -> Flask:
 
     app = Flask(__name__)
 
+    # Для проверки NLU Proxy
     @app.route('/webhooks/rest/webhook', methods=['POST'])
     def rasa_webhook():
         data = request.json
@@ -39,7 +41,7 @@ def app() -> Flask:
         if data.get("sender") != SENDER_ID:
             message = data.get("message")
             if message in response_map:
-                return send_post_request(response_map[message])
+                return send_post_request(f'http://{HOST}:8804/command/rasa', response_map[message])
         else:
             message = data.get("message")
             if message in response_map:

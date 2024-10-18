@@ -1,5 +1,4 @@
-import pytest
-from services.db_utils import execute_query
+from services.db_utils import execute_query_mysql
 from services.docker_setup import *
 from services.rabbit_set import send_message_to_rabbitmq
 from pytest_testrail.plugin import pytestrail
@@ -13,13 +12,13 @@ def test_audit_income_call():
     # Отправляем тестовое сообщение через RabbitMQ
     send_message_to_rabbitmq("testdata/audit/income_call.json")
 
-    time.sleep(2)
+    time.sleep(1)
 
     # Проверяем данные в MySQL
     with open('testdata/audit/sql/income_call.sql', 'r') as file:
         sql = file.read()
     query = sql
-    result = execute_query(query)
+    result = execute_query_mysql(query)
     print(result)
 
     # Проверяем корректность ответа

@@ -1,24 +1,22 @@
-import pytest
-import time
 import mysql.connector
-from typing import List, Tuple, Optional
+from typing import List, Tuple
 from config.settings import *
 
 # Define the database credentials
-database_config = {
+mysql_database_config = {
     'user': DATABASE_USERNAME,
     'password': DATABASE_PASSWORD,
-    'host': '127.0.0.1',
+    'host': HOST,
     'port': 3306,
-    'database': 'SMIDDLE'
+    'database': DATABASE_NAME
 }
 
 
-def execute_query(query: str) -> List[Tuple]:
+def execute_query_mysql(query: str) -> List[Tuple]:
     try:
         # Connect to the database
-        conn = mysql.connector.connect(**database_config)
-        print('Connected to Smiddle MySQL database!')
+        conn = mysql.connector.connect(**mysql_database_config)
+        print('Connected to MySQL database!')
     except mysql.connector.Error as err:
         print(f'Error connecting to database: {err}')
         return []  # Возвращаем пустой список в случае ошибки

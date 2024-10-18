@@ -26,14 +26,15 @@ AUDIT_ROUTING_KEY_SEARCH = 'svb-audit-search-key'
 INFLUXDB_ORG = "my_org"
 INFLUXDB_BUCKET = "my_bucket"
 INFLUXDB_TOKEN = "my_token"
-INFLUXDB_URL = "http://10.100.90.25:8086"
+INFLUXDB_URL = f"http://{HOST}:8086"
 
 #MYSQL
-DATABASE_URL="jdbc:mysql://10.100.90.25:3306/SMIDDLE?useSSL=false&rewriteBatchedStatements=true"
+DATABASE_URL=f"jdbc:mysql://{HOST}:3306/SMIDDLE?useSSL=false&rewriteBatchedStatements=true"
 DATABASE_USERNAME='root'
 DATABASE_PASSWORD='root_password'
 DATABASE_DRIVER='com.mysql.cj.jdbc.Driver'
 DATABASE_DIALECT='org.hibernate.dialect.MySQLDialect'
+DATABASE_NAME='SMIDDLE'
 
 
 
