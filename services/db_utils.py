@@ -12,7 +12,7 @@ mysql_database_config = {
 }
 
 
-def execute_query_mysql(query: str) -> List[Tuple]:
+def execute_query_mysql(sql_file: str) -> List[Tuple]:
     try:
         # Connect to the database
         conn = mysql.connector.connect(**mysql_database_config)
@@ -20,6 +20,10 @@ def execute_query_mysql(query: str) -> List[Tuple]:
     except mysql.connector.Error as err:
         print(f'Error connecting to database: {err}')
         return []  # Возвращаем пустой список в случае ошибки
+
+    with open(sql_file, 'r') as file:
+        sql = file.read()
+    query = sql
 
     try:
         # Create a cursor and execute the query

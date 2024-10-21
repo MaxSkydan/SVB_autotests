@@ -6,7 +6,7 @@ from pytest_testrail.plugin import pytestrail
 
 
 
-# Автотест для проверки всей цепочки обработки
+# # Автотест для проверки всей цепочки обработки
 @pytest.mark.usefixtures("setup_audit_docker")
 @pytestrail.case('C2313')
 def test_audit_income_call():
@@ -16,11 +16,7 @@ def test_audit_income_call():
     time.sleep(1)
 
     # Проверяем данные в MySQL
-    with open('testdata/audit/sql/income_call.sql', 'r') as file:
-        sql = file.read()
-    query = sql
-    result = execute_query_mysql(query)
-    print(result)
+    result = execute_query_mysql('testdata/audit/sql/income_call.sql')
 
     # Проверяем корректность ответа
     assert result is not []
@@ -40,11 +36,7 @@ def test_audit_session_initialized():
     time.sleep(1)
 
     # Проверяем данные в MySQL
-    with open('testdata/audit/sql/session_initialized.sql', 'r') as file:
-        sql = file.read()
-    query = sql
-    result = execute_query_mysql(query)
-    print(result)
+    result = execute_query_mysql('testdata/audit/sql/session_initialized.sql')
 
     # Проверяем корректность ответа
     assert result is not []
@@ -60,11 +52,7 @@ def test_audit_start_call_ari_proxy():
     time.sleep(1)
 
     # Проверяем данные в MySQL
-    with open('testdata/audit/sql/start_call_ari_proxy.sql', 'r') as file:
-        sql = file.read()
-    query = sql
-    result = execute_query_mysql(query)
-    print(result)
+    result = execute_query_mysql('testdata/audit/sql/start_call_ari_proxy.sql')
 
     # Проверяем корректность ответа
     assert result is not []
@@ -80,11 +68,8 @@ def test_audit_start_call_nlu_proxy():
     time.sleep(1)
 
     # Проверяем данные в MySQL
-    with open('testdata/audit/sql/start_call_nlu_proxy.sql', 'r') as file:
-        sql = file.read()
-    query = sql
-    result = execute_query_mysql(query)
-    print(result)
+    result = execute_query_mysql('testdata/audit/sql/start_call_nlu_proxy.sql')
+
     # Преобразуем значение из поля message в объект Python
     massage_json = json.loads(result[0][10])
 
@@ -104,11 +89,8 @@ def test_audit_speech_service_rec():
     time.sleep(1)
 
     # Проверяем данные в MySQL
-    with open('testdata/audit/sql/speech_rec_speech_service.sql', 'r') as file:
-        sql = file.read()
-    query = sql
-    result = execute_query_mysql(query)
-    print(result)
+    result = execute_query_mysql('testdata/audit/sql/speech_rec_speech_service.sql')
+
 
     # Проверяем корректность ответа
     assert result is not []
@@ -125,11 +107,8 @@ def test_audit_response_generated_2_types():
     time.sleep(1)
 
     # Проверяем данные в MySQL
-    with open('testdata/audit/sql/response_generated_2_types.sql', 'r') as file:
-        sql = file.read()
-    query = sql
-    result = execute_query_mysql(query)
-    print(result)
+    result = execute_query_mysql('testdata/audit/sql/response_generated_2_types.sql')
+
     # Преобразуем значение из поля message в объект Python
     massage_json = json.loads(result[0][10])
 
@@ -151,11 +130,8 @@ def test_audit_filler_insertion():
     time.sleep(1)
 
     # Проверяем данные в MySQL
-    with open('testdata/audit/sql/filler_insertion_nlu.sql', 'r') as file:
-        sql = file.read()
-    query = sql
-    result = execute_query_mysql(query)
-    print(result)
+    result = execute_query_mysql('testdata/audit/sql/filler_insertion_nlu.sql')
+
     # Преобразуем значение из поля message в объект Python
     massage_json = json.loads(result[0][10])
 
@@ -169,10 +145,7 @@ def test_audit_filler_insertion():
 
 @pytestrail.case('C2315')
 def test_audit_beep_command():
-    with open('testdata/audit/sql/delete_records.sql', 'r') as file:
-        sql = file.read()
-    query = sql
-    execute_query_mysql(query)
+    execute_query_mysql('testdata/audit/sql/delete_records.sql')
 
     time.sleep(1)
 
@@ -182,10 +155,7 @@ def test_audit_beep_command():
     time.sleep(1)
 
     # Проверяем данные в MySQL
-    with open('testdata/audit/sql/beep_command_nlu.sql', 'r') as file:
-        sql = file.read()
-    query = sql
-    result = execute_query_mysql(query)
+    result = execute_query_mysql('testdata/audit/sql/beep_command_nlu.sql')
     print(result)
     # Преобразуем значение из поля message в объект Python
     massage_json = json.loads(result[0][10])
