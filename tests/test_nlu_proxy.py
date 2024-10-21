@@ -37,10 +37,10 @@ def test_nlu_2_types_response():
 
     assert response is not None
     assert response["eventType"] == "RESPONSE_GENERATED"
-    assert (response["script"][0]["type"] == "TEXT" and
-            response["script"][0]["value"] == "я не можу з цим допомогти , запитайте щось інше")
-    assert (response["script"][1]["type"] == "FILE" and
-            response["script"][1]["value"] == "greeting")
+    assert response["script"][0]["type"] == "TEXT"
+    assert response["script"][0]["value"] == "я не можу з цим допомогти , запитайте щось інше"
+    assert response["script"][1]["type"] == "FILE"
+    assert response["script"][1]["value"] == "greeting"
     assert response["isUninterruptible"] is False
 
 
@@ -88,7 +88,8 @@ def test_nlu_end_call_response():
 
     assert response is not None
     assert response["eventType"] == "END_CALL"
-    assert response["script"][0]["type"] == "TEXT" and response["script"][0]["value"] == "Приємно було спілкуватись"
+    assert response["script"][0]["type"] == "TEXT"
+    assert response["script"][0]["value"] == "Приємно було спілкуватись"
 
 
 @pytestrail.case('C2326', 'C2332', 'C2339', 'C2345')
@@ -101,8 +102,8 @@ def test_nlu_redirect_call():
 
     assert response is not None
     assert response["eventType"] == "REDIRECT_CALL"
-    assert (response["script"][0]["type"] == "TEXT" and
-            response["script"][0]["value"] == "Я вас не розумію. Перевожу на оператора")
+    assert response["script"][0]["type"] == "TEXT"
+    assert response["script"][0]["value"] == "Я вас не розумію. Перевожу на оператора"
     assert response["redirectNumber"] == "7777"
 
 
@@ -116,8 +117,8 @@ def test_nlu_user_redirect_call():
 
     assert response is not None
     assert response["eventType"] == "USER_REDIRECT_CALL"
-    assert (response["script"][0]["type"] == "TEXT" and
-            response["script"][0]["value"] == "Добре. Перевожу на оператора")
+    assert response["script"][0]["type"] == "TEXT"
+    assert response["script"][0]["value"] == "Добре. Перевожу на оператора"
 
 
 @pytestrail.case('C2324', 'C2341')
@@ -130,8 +131,8 @@ def test_nlu_beep_command():
 
     assert response is not None
     assert response["eventType"] == "BEEP"
-    assert (response["script"][0]["type"] == "TEXT" and
-            response["script"][0]["value"] == "Назвіть останні цифри лічильника після звукового сигналу")
+    assert response["script"][0]["type"] == "TEXT"
+    assert response["script"][0]["value"] == "Назвіть останні цифри лічильника після звукового сигналу"
 
 
 @pytestrail.case('C2325', 'C2342', 'C2347')
@@ -144,8 +145,8 @@ def test_nlu_filler_insertion_command():
 
     assert response is not None
     assert response["eventType"] == "FILLER_INSERTION"
-    assert (response["script"][0]["type"] == "TEXT" and
-            response["script"][0]["value"] == "Дякую за запитання. Спробую Вам відповісти на нього.")
+    assert response["script"][0]["type"] == "TEXT"
+    assert response["script"][0]["value"] == "Дякую за запитання. Зачекайте хвилинку."
     assert response["isUninterruptible"] is True
 
 
@@ -172,10 +173,10 @@ def test_nlu_empty_string_response():
 
     assert response is not None
     assert response["eventType"] == "RESPONSE_GENERATED"
-    assert (response["script"][0]["type"] == "TEXT" and
-            response["script"][0]["value"] == "")
-    assert (response["script"][1]["type"] == "FILE" and
-            response["script"][1]["value"] == "greeting")
+    assert response["script"][0]["type"] == "TEXT"
+    assert response["script"][0]["value"] == ""
+    assert response["script"][1]["type"] == "FILE"
+    assert response["script"][1]["value"] == "greeting"
 
 
 if __name__ == "__main__":

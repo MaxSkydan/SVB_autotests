@@ -34,7 +34,7 @@
     ],
     "Хочу дізнатися про вашу систему запису": [
         {"text": "#COMMAND:FILLER_INSERTION", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b39:7739"},
-        {"text": "Дякую за запитання. Спробую Вам відповісти на нього.", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b39:7739"},
+        {"text": "Дякую за запитання. Зачекайте хвилинку.", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b39:7739"},
         {"text": "#UNINTERRUPTIBLE", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b39:7739"}
     ],
     "Відсутній номер абонента": [

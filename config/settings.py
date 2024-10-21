@@ -45,10 +45,10 @@ AUDIT_ROUTING_KEY_SEARCH = 'svb-audit-search-key'
 
 
 #Настройки Docker
-DOCKER_IMAGE_NLU = 'sm-nexus3.smiddle.lab:5000/smiddlegroup/svb-nlu-proxy:dev'
-CONTAINER_NAME_NLU = 'svb-nlu-proxy'
-DOCKER_IMAGE_AUDIT = 'sm-nexus3.smiddle.lab:5000/smiddlegroup/svb-audit:dev'
-CONTAINER_NAME_AUDIT = 'svb-audit'
-DOCKER_IMAGE_RABBIT = 'rabbitmq:3.12.12-management-alpine'
-CONTAINER_NAME_RABBIT = 'test_rabbitmq'
+DOCKER_IMAGE_NLU = os.getenv('DOCKER_IMAGE_NLU')
+CONTAINER_NAME_NLU = os.getenv('CONTAINER_NAME_NLU')
+DOCKER_IMAGE_AUDIT = os.getenv('DOCKER_IMAGE_AUDIT')
+CONTAINER_NAME_AUDIT = os.getenv('CONTAINER_NAME_AUDIT')
+DOCKER_IMAGE_RABBIT = os.getenv('DOCKER_IMAGE_RABBIT')
+CONTAINER_NAME_RABBIT = os.getenv('CONTAINER_NAME_RABBIT')
 
