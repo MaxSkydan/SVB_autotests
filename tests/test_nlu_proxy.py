@@ -179,5 +179,17 @@ def test_nlu_empty_string_response():
     assert response["script"][1]["value"] == "greeting"
 
 
+# @pytestrail.case('C2381')
+# def test_nlu_unsupported_command_end_call_message():
+#     send_message_to_rabbitmq("testdata/nlu_proxy/invalid_cmd_end_msg.json")
+#
+#     flask_event.wait(timeout=10)
+#
+#     response = listen_for_response()
+#
+#     assert response is not None
+#     assert response["eventType"] == "END_CALL_MESSAGE"
+
+
 if __name__ == "__main__":
     pytest.main([__file__])

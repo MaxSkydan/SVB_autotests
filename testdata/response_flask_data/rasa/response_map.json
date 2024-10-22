@@ -43,5 +43,8 @@
     "Пустий стрінг в повідомленні": [
         {"text": "", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"},
         {"text": "#FILE:greeting", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"}
+    ],
+    "Бувай": [
+        {"text": "#COMMAND:END_CALL_MESSAGE", "recipient_id": "d8bd8e5f-f309-4c13-a569-11c12cfc4b30:7739"}
     ]
 }
