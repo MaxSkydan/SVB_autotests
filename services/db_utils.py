@@ -1,4 +1,6 @@
+import time
 import mysql.connector
+from influxdb_client import InfluxDBClient
 from typing import List, Tuple
 from config.settings import *
 
@@ -45,3 +47,40 @@ def execute_query_mysql(sql_file: str) -> List[Tuple]:
         conn.close()
 
     return result
+
+
+def execute_query_influx_db(influx_query):
+    # Создаем клиент для подключения к InfluxDB
+    client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG)
+
+    # Проверяем успешность подключения
+    try:
+        health = client.ping()
+        if health:
+            print("Connected to InfluxDB!")
+    except Exception as e:
+        print(f"Ошибка подключения: {e}")  # Выводим ошибку для отладки
+        time.sleep(2)
+        return  # Завершаем выполнение функции, если не удалось подключиться
+
+    # Выполняем запрос и обрабатываем результат
+    try:
+        query_api = client.query_api()
+        result = query_api.query(influx_query)
+
+        if not result:
+            print("Запрос не вернул результатов.")
+            return
+
+        for table in result:
+            for record in table.records:
+                # Выводим больше полей для отладки, если необходимо
+                print(
+                    f'Time: {record["_time"]}, Measurement: {record["_measurement"]}, Field: {record["_field"]}, Value: {record["_value"]}')
+
+    except Exception as e:
+        print(f"Ошибка при выполнении запроса: {e}")  # Отладка ошибки запроса
+
+    finally:
+        # Закрываем клиент после работы
+        client.close()

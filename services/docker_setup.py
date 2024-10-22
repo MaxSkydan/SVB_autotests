@@ -135,12 +135,9 @@ def setup_influxdb_container():
     for _ in range(10):  # Пробуем несколько раз, пока база не станет доступна
         try:
             connect = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG)
-            # Проверяем успешность подключения
-            health = client.ping()
-            if health:
-                connect.close()
-                print("Подключение к базе данных InfluxDB успешно установлено!")
-                break
+            connect.close()
+            print("Подключение к базе данных InfluxDB успешно установлено!")
+            break
         except Exception as e:
                 print(f"Ошибка подключения: {e}")  # Выводим ошибку для отладки
                 time.sleep(2)

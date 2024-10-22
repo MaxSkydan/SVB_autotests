@@ -1,5 +1,5 @@
 import json
-from services.db_utils import execute_query_mysql
+from services.db_utils import *
 from services.docker_setup import *
 from services.rabbit_set import send_message_to_rabbitmq
 from pytest_testrail.plugin import pytestrail
@@ -244,6 +244,13 @@ def test_audit_end_call_message_speech_service():
     assert result
     assert result[0][8] == 'SPEECH_SERVICE'
     assert result[0][9] == 'END_CALL_MESSAGE'
+
+    result_influx = execute_query_influx_db(f"""
+                    from(bucket: "{INFLUXDB_BUCKET}")
+                    |> range(start: -1h)
+                    """)
+    print(result_influx)
+
 
 
 @pytestrail.case('C2363')
