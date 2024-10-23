@@ -1,0 +1,87 @@
+{
+  "income_call": {
+    "serviceType": "ARI_PROXY",
+    "eventType": "INCOME_CALL"
+  },
+  "session_initialized": {
+    "serviceType": "SPEECH_SERVICE",
+    "eventType": "SESSION_INITIALIZED"
+  },
+  "start_call_ari_proxy": {
+    "serviceType": "ARI_PROXY",
+    "eventType": "START_CALL"
+  },
+  "start_call_nlu_proxy": {
+    "serviceType": "NLU_PROXY",
+    "eventType": "START_CALL",
+    "message": "[{\"type\":\"TEXT\",\"value\":\"Hello, I speak Ukrainian and English, how can I help you?\"}]"
+  },
+  "speech_rec_speech_service": {
+    "serviceType": "SPEECH_SERVICE",
+    "eventType": "SPEECH_RECOGNIZED",
+    "message": "Розкажи, що ти вмієш."
+  },
+  "response_generated_2_types": {
+    "serviceType": "NLU_PROXY",
+    "eventType": "RESPONSE_GENERATED",
+    "message": "[{\"type\":\"TEXT\",\"value\":\"я не можу з цим допомогти , запитайте щось інше\"}, {\"type\":\"FILE\",\"value\": \"greeting\"}]"
+  },
+  "filler_insertion_nlu": {
+    "serviceType": "NLU_PROXY",
+    "eventType": "FILLER_INSERTION",
+    "message": "[{\"type\":\"TEXT\",\"value\":\"Зачекайте хвилинку\"}]"
+  },
+  "beep_command_nlu": {
+    "serviceType": "NLU_PROXY",
+    "eventType": "BEEP",
+    "message": "[{\"type\":\"TEXT\",\"value\":\"Назвіть останні цифри лічильника після звукового сигналу\"}]"
+  },
+  "redirect_call_with_number": {
+    "redirectNumber": "7777",
+    "serviceType": "NLU_PROXY",
+    "eventType": "REDIRECT_CALL",
+    "message": "[{\"type\":\"TEXT\",\"value\":\"Я вас не розумію. Перевожу на оператора\"}]"
+  },
+  "end_call_nlu": {
+    "serviceType": "NLU_PROXY",
+    "eventType": "END_CALL",
+    "message": "[{\"type\":\"TEXT\",\"value\":\"На все добре\"}]"
+  },
+  "end_call_message_speech_service": {
+    "serviceType": "SPEECH_SERVICE",
+    "eventType": "END_CALL_MESSAGE",
+    "isLast": true
+  },
+  "user_redirect_call_without_number": {
+    "serviceType": "NLU_PROXY",
+    "eventType": "USER_REDIRECT_CALL",
+    "message": "[{\"type\":\"TEXT\",\"value\":\"Добре. Перевожу на оператора\"}]"
+  },
+  "error_command_nlu": {
+    "serviceType": "NLU_PROXY",
+    "eventType": "ERROR"
+  },
+  "error_command_speech_service": {
+    "serviceType": "SPEECH_SERVICE",
+    "eventType": "ERROR"
+  },
+  "error_command_ari_proxy": {
+    "serviceType": "ARI_PROXY",
+    "eventType": "ERROR"
+  },
+  "unknown_command": {
+    "serviceType": "NLU_PROXY",
+    "eventType": "ERROR1"
+  },
+  "missing_number": {
+    "ani": null,
+    "serviceType": "SPEECH_SERVICE",
+    "eventType": "SPEECH_RECOGNIZED",
+    "message": "Розкажи, що ти вмієш."
+  },
+  "end_call_speech_service": {
+    "serviceType": "SPEECH_SERVICE",
+    "eventType": "END_CALL",
+    "message": "Бувай"
+  }
+}

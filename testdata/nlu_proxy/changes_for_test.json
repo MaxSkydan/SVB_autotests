@@ -1,0 +1,52 @@
+{
+  "start_call": {
+    "eventType": "START_CALL"
+  },
+  "speech_call_2_types_response": {
+    "eventType": "SPEECH_RECOGNIZED",
+    "message": "Де подивитись гарний фільм?"
+  },
+  "error_request": {
+    "eventType": "#COMMAND:ERROR"
+  },
+  "end_call_request": {
+    "eventType": "#COMMAND:END_CALL"
+  },
+  "error_response": {
+    "eventType": "SPEECH_RECOGNIZED",
+    "message": "Error"
+  },
+  "end_call_response": {
+    "eventType": "SPEECH_RECOGNIZED",
+    "message": "На все добре. До побачення"
+  },
+  "redirect_call": {
+    "eventType": "SPEECH_RECOGNIZED",
+    "message": "Щось нове та цікаве"
+  },
+  "user_redirect_call": {
+    "eventType": "SPEECH_RECOGNIZED",
+    "message": "Переведи мене на оператора"
+  },
+  "beep_command": {
+    "eventType": "SPEECH_RECOGNIZED",
+    "message": "Лічильник"
+  },
+  "filler_insertion_command": {
+    "eventType": "SPEECH_RECOGNIZED",
+    "sessionId": "d8bd8e5f-f309-4c13-a569-11c12cfc4b31",
+    "message": "Хочу дізнатися про вашу систему запису"
+  },
+  "missing_number": {
+    "eventType": "SPEECH_RECOGNIZED",
+    "message": "Відсутній номер абонента"
+  },
+  "empty_string": {
+    "eventType": "SPEECH_RECOGNIZED",
+    "message": "Пустий стрінг в повідомленні"
+  },
+  "invalid_cmd_end_msg": {
+    "eventType": "SPEECH_RECOGNIZED",
+    "message": "Бувай"
+  }
+}

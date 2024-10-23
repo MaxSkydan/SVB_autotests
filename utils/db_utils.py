@@ -1,4 +1,5 @@
 import time
+import json
 import mysql.connector
 from influxdb_client import InfluxDBClient
 from typing import List, Tuple
@@ -14,7 +15,7 @@ mysql_database_config = {
 }
 
 
-def execute_query_mysql(sql_file: str) -> List[Tuple]:
+def execute_query_mysql(sql_queries: str, trigger_word: str) -> List[Tuple]:
     try:
         # Connect to the database
         conn = mysql.connector.connect(**mysql_database_config)
@@ -23,9 +24,20 @@ def execute_query_mysql(sql_file: str) -> List[Tuple]:
         print(f'Error connecting to database: {err}')
         return []  # Возвращаем пустой список в случае ошибки
 
-    with open(sql_file, 'r') as file:
-        sql = file.read()
-    query = sql
+    # Чтение SQL-запросов из JSON-файла
+    try:
+        with open(sql_queries, 'r') as queries_file:
+            queries_data = json.load(queries_file)
+    except FileNotFoundError as e:
+        print(f"Error: SQL queries file not found - {e}")
+        return []
+
+    # Поиск SQL-запроса по триггерному слову
+    if trigger_word in queries_data:
+        query = queries_data[trigger_word]  # SQL-запрос для триггера
+    else:
+        print(f"Trigger word '{trigger_word}' not found in SQL queries file.")
+        return []
 
     try:
         # Create a cursor and execute the query
@@ -72,11 +84,8 @@ def execute_query_influx_db(influx_query):
             print("Запрос не вернул результатов.")
             return
 
-        for table in result:
-            for record in table.records:
-                # Выводим больше полей для отладки, если необходимо
-                print(
-                    f'Time: {record["_time"]}, Measurement: {record["_measurement"]}, Field: {record["_field"]}, Value: {record["_value"]}')
+        output = result.to_json(indent=5)
+        print(output)
 
     except Exception as e:
         print(f"Ошибка при выполнении запроса: {e}")  # Отладка ошибки запроса

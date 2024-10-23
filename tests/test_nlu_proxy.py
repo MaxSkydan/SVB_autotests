@@ -2,6 +2,7 @@ import pytest
 from services.flask_app import flask_event, app
 from services.docker_setup import setup_rabbitmq_docker, setup_nlu_proxy_docker
 from services.rabbit_set import *
+from utils.wrappers import wrapper_nlu_proxy_service
 from pytest_testrail.plugin import pytestrail
 
 
@@ -10,14 +11,17 @@ from pytest_testrail.plugin import pytestrail
 @pytest.mark.usefixtures("setup_nlu_proxy_docker", "app")
 @pytestrail.case('C2313', 'C2314', 'C2316', 'C2317', 'C2322', 'C2330', 'C2335', 'C2343', 'C2344')
 def test_nlu_start_call():
+    # Меняем данные для теста
+    message = wrapper_nlu_proxy_service("testdata/nlu_proxy/main_message_to_nlu_proxy.json",
+                                    "start_call")
     # Отправляем тестовое сообщение через RabbitMQ
-    send_message_to_rabbitmq("testdata/nlu_proxy/start_call.json")
+    send_message_to_rabbitmq(message)
 
     # Ждем, пока событие на Flask не сработает
     flask_event.wait(timeout=10)
 
     # Слушаем ответ от RabbitMQ
-    response = listen_for_response()
+    response = listen_for_response(ROUTER_NLU_PROXY_QUEUE_RESPONSE)
 
     # Проверяем корректность ответа
     assert response is not None
@@ -28,12 +32,15 @@ def test_nlu_start_call():
 
 
 @pytestrail.case('C2315', 'C2318', 'C2323', 'C2331', 'C2333', 'C2336', 'C2346')
-def test_nlu_2_types_response():
-    send_message_to_rabbitmq("testdata/nlu_proxy/speach_call.json")
+def test_nlu_speech_call_2_types_response():
+    message = wrapper_nlu_proxy_service("testdata/nlu_proxy/main_message_to_nlu_proxy.json",
+                                        "speech_call_2_types_response")
+
+    send_message_to_rabbitmq(message)
 
     flask_event.wait(timeout=10)
 
-    response = listen_for_response()
+    response = listen_for_response(ROUTER_NLU_PROXY_QUEUE_RESPONSE)
 
     assert response is not None
     assert response["eventType"] == "RESPONSE_GENERATED"
@@ -46,33 +53,42 @@ def test_nlu_2_types_response():
 
 @pytestrail.case('C2319')
 def test_nlu_error_request():
-    send_message_to_rabbitmq("testdata/nlu_proxy/error_request.json")
+    message = wrapper_nlu_proxy_service("testdata/nlu_proxy/main_message_to_nlu_proxy.json",
+                                        "error_request")
+
+    send_message_to_rabbitmq(message)
 
     flask_event.wait(timeout=10)
 
-    response = listen_for_response()
+    response = listen_for_response(ROUTER_NLU_PROXY_QUEUE_RESPONSE)
 
     assert response is None
 
 
 @pytestrail.case('C2320')
 def test_nlu_end_call_request():
-    send_message_to_rabbitmq("testdata/nlu_proxy/end_call_request.json")
+    message = wrapper_nlu_proxy_service("testdata/nlu_proxy/main_message_to_nlu_proxy.json",
+                                        "end_call_request")
+
+    send_message_to_rabbitmq(message)
 
     flask_event.wait(timeout=10)
 
-    response = listen_for_response()
+    response = listen_for_response(ROUTER_NLU_PROXY_QUEUE_RESPONSE)
 
     assert response is None
 
 
 @pytestrail.case('C2321', 'C2329', 'C2334', 'C2338')
 def test_nlu_error_response():
-    send_message_to_rabbitmq("testdata/nlu_proxy/error_response.json")
+    message = wrapper_nlu_proxy_service("testdata/nlu_proxy/main_message_to_nlu_proxy.json",
+                                        "error_response")
+
+    send_message_to_rabbitmq(message)
 
     flask_event.wait(timeout=10)
 
-    response = listen_for_response()
+    response = listen_for_response(ROUTER_NLU_PROXY_QUEUE_RESPONSE)
 
     assert response is not None
     assert response["eventType"] == "ERROR"
@@ -80,11 +96,14 @@ def test_nlu_error_response():
 
 @pytestrail.case('C2328', 'C2337')
 def test_nlu_end_call_response():
-    send_message_to_rabbitmq("testdata/nlu_proxy/goodbye.json")
+    message = wrapper_nlu_proxy_service("testdata/nlu_proxy/main_message_to_nlu_proxy.json",
+                                        "end_call_response")
+
+    send_message_to_rabbitmq(message)
 
     flask_event.wait(timeout=10)
 
-    response = listen_for_response()
+    response = listen_for_response(ROUTER_NLU_PROXY_QUEUE_RESPONSE)
 
     assert response is not None
     assert response["eventType"] == "END_CALL"
@@ -94,11 +113,14 @@ def test_nlu_end_call_response():
 
 @pytestrail.case('C2326', 'C2332', 'C2339', 'C2345')
 def test_nlu_redirect_call():
-    send_message_to_rabbitmq("testdata/nlu_proxy/redirect_call.json")
+    message = wrapper_nlu_proxy_service("testdata/nlu_proxy/main_message_to_nlu_proxy.json",
+                                        "redirect_call")
+
+    send_message_to_rabbitmq(message)
 
     flask_event.wait(timeout=10)
 
-    response = listen_for_response()
+    response = listen_for_response(ROUTER_NLU_PROXY_QUEUE_RESPONSE)
 
     assert response is not None
     assert response["eventType"] == "REDIRECT_CALL"
@@ -109,11 +131,14 @@ def test_nlu_redirect_call():
 
 @pytestrail.case('C2327', 'C2340')
 def test_nlu_user_redirect_call():
-    send_message_to_rabbitmq("testdata/nlu_proxy/user_redirect_call.json")
+    message = wrapper_nlu_proxy_service("testdata/nlu_proxy/main_message_to_nlu_proxy.json",
+                                        "user_redirect_call")
+
+    send_message_to_rabbitmq(message)
 
     flask_event.wait(timeout=10)
 
-    response = listen_for_response()
+    response = listen_for_response(ROUTER_NLU_PROXY_QUEUE_RESPONSE)
 
     assert response is not None
     assert response["eventType"] == "USER_REDIRECT_CALL"
@@ -123,11 +148,14 @@ def test_nlu_user_redirect_call():
 
 @pytestrail.case('C2324', 'C2341')
 def test_nlu_beep_command():
-    send_message_to_rabbitmq("testdata/nlu_proxy/beep_command.json")
+    message = wrapper_nlu_proxy_service("testdata/nlu_proxy/main_message_to_nlu_proxy.json",
+                                        "beep_command")
+
+    send_message_to_rabbitmq(message)
 
     flask_event.wait(timeout=10)
 
-    response = listen_for_response()
+    response = listen_for_response(ROUTER_NLU_PROXY_QUEUE_RESPONSE)
 
     assert response is not None
     assert response["eventType"] == "BEEP"
@@ -137,11 +165,14 @@ def test_nlu_beep_command():
 
 @pytestrail.case('C2325', 'C2342', 'C2347')
 def test_nlu_filler_insertion_command():
-    send_message_to_rabbitmq("testdata/nlu_proxy/filler_insertion_command.json")
+    message = wrapper_nlu_proxy_service("testdata/nlu_proxy/main_message_to_nlu_proxy.json",
+                                        "filler_insertion_command")
+
+    send_message_to_rabbitmq(message)
 
     flask_event.wait(timeout=10)
 
-    response = listen_for_response()
+    response = listen_for_response(ROUTER_NLU_PROXY_QUEUE_RESPONSE)
 
     assert response is not None
     assert response["eventType"] == "FILLER_INSERTION"
@@ -152,11 +183,14 @@ def test_nlu_filler_insertion_command():
 
 @pytestrail.case('C2348', 'C2350')
 def test_nlu_missing_number():
-    send_message_to_rabbitmq("testdata/nlu_proxy/missing_number.json")
+    message = wrapper_nlu_proxy_service("testdata/nlu_proxy/main_message_to_nlu_proxy.json",
+                                        "missing_number")
+
+    send_message_to_rabbitmq(message)
 
     flask_event.wait(timeout=10)
 
-    response = listen_for_response()
+    response = listen_for_response(ROUTER_NLU_PROXY_QUEUE_RESPONSE)
 
     assert response is not None
     assert response["eventType"] == "RESPONSE_GENERATED"
@@ -165,11 +199,14 @@ def test_nlu_missing_number():
 
 @pytestrail.case('C2349')
 def test_nlu_empty_string_response():
-    send_message_to_rabbitmq("testdata/nlu_proxy/empty_string.json")
+    message = wrapper_nlu_proxy_service("testdata/nlu_proxy/main_message_to_nlu_proxy.json",
+                                        "empty_string")
+
+    send_message_to_rabbitmq(message)
 
     flask_event.wait(timeout=10)
 
-    response = listen_for_response()
+    response = listen_for_response(ROUTER_NLU_PROXY_QUEUE_RESPONSE)
 
     assert response is not None
     assert response["eventType"] == "RESPONSE_GENERATED"
@@ -181,11 +218,14 @@ def test_nlu_empty_string_response():
 
 # @pytestrail.case('C2381')
 # def test_nlu_unsupported_command_end_call_message():
-#     send_message_to_rabbitmq("testdata/nlu_proxy/invalid_cmd_end_msg.json")
+#     message = wrapper_nlu_proxy_service("testdata/nlu_proxy/main_message_to_nlu_proxy.json",
+#                                         "invalid_cmd_end_msg")
+#
+#     send_message_to_rabbitmq(message)
 #
 #     flask_event.wait(timeout=10)
 #
-#     response = listen_for_response()
+#     response = listen_for_response(ROUTER_NLU_PROXY_QUEUE_RESPONSE)
 #
 #     assert response is not None
 #     assert response["eventType"] == "END_CALL_MESSAGE"

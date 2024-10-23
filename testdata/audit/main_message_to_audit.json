@@ -1,16 +1,16 @@
 {
   "message": {
     "id": null,
-    "timestamp": 1729067757760,
+    "timestamp": 1729664182111,
     "sessionId": "27603392-667f-4a00-ba87-9670636e6955",
     "projectId": 1,
     "ani": "7739",
     "dnis": "8621",
     "context": "smiddle.org",
     "redirectNumber": null,
-    "serviceType": "NLU_PROXY",
-    "eventType": "USER_REDIRECT_CALL",
-    "message": "[{\"type\":\"TEXT\",\"value\":\"Добре. Перевожу на оператора\"}]",
+    "serviceType": null,
+    "eventType": null,
+    "message": null,
     "isLast": false,
     "bucketName": "svb-1"
   },

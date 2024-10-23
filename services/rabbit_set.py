@@ -51,13 +51,13 @@ def setup_rabbitmq(channel):
                              exchange_type='direct', durable=True)
 
 # Функция для отправки тестового сообщения в RabbitMQ
-def send_message_to_rabbitmq(message_file):
+def send_message_to_rabbitmq(message_data):
 
     connection, channel = connect_to_rabbitmq()
     setup_rabbitmq(channel)  # Убедиться, что обмен и очередь существуют
 
-    with open(message_file, 'r', encoding='utf-8') as file:
-        message_data = json.load(file)
+    # with open(message_file, 'r', encoding='utf-8') as file:
+    #     message_data = json.load(file)
 
     data = message_data.get('message')
     exchange_name = message_data.get('exchange_name')
@@ -83,7 +83,7 @@ def send_message_to_rabbitmq(message_file):
     connection.close()
 
 # Ожидание ответа из RabbitMQ с таймаутом
-def listen_for_response(timeout=30, polling_interval=1):
+def listen_for_response(queue, timeout=30, polling_interval=1):
     connection, channel = connect_to_rabbitmq()
 
     # Убедимся, что очередь существует
@@ -92,7 +92,7 @@ def listen_for_response(timeout=30, polling_interval=1):
     start_time = time.time()
     while time.time() - start_time < timeout:
         # Пытаемся получить сообщение из очереди
-        method_frame, header_frame, body = channel.basic_get(queue=ROUTER_NLU_PROXY_QUEUE_RESPONSE, auto_ack=True)
+        method_frame, header_frame, body = channel.basic_get(queue=queue, auto_ack=True)
 
         if body:
             response = json.loads(body)
