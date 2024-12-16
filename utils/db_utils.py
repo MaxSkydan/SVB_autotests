@@ -62,18 +62,32 @@ def execute_query_mysql(sql_queries: str, trigger_word: str) -> List[Tuple]:
 
 
 def execute_query_influx_db(influx_query):
-    # Создаем клиент для подключения к InfluxDB
-    client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG)
+    """
+    Выполняет запрос к InfluxDB и возвращает массив словарей с результатами.
 
-    # Проверяем успешность подключения
+    Args:
+        influx_query (str): Запрос на языке Flux.
+
+    Returns:
+        list: Массив словарей с результатами или пустой список, если произошла ошибка.
+    """
+    try:
+        client = InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG)
+    except Exception as e:
+        print(f"Ошибка создания клиента: {e}")
+        return []
+
+    # Проверяем подключение
     try:
         health = client.ping()
         if health:
             print("Connected to InfluxDB!")
+        else:
+            print("Подключение к InfluxDB не удалось.")
+            return []
     except Exception as e:
-        print(f"Ошибка подключения: {e}")  # Выводим ошибку для отладки
-        time.sleep(2)
-        return  # Завершаем выполнение функции, если не удалось подключиться
+        print(f"Ошибка подключения: {e}")
+        return []
 
     # Выполняем запрос и обрабатываем результат
     try:
@@ -82,14 +96,33 @@ def execute_query_influx_db(influx_query):
 
         if not result:
             print("Запрос не вернул результатов.")
-            return
+            return []
 
-        output = result.to_json(indent=5)
-        print(output)
+        # Обрабатываем данные из результата
+        output = []
+        for table in result:
+            for record in table.records:
+                output.append({
+                    "result": record["result"],
+                    "table": record["table"],
+                    "_start": record["_start"],
+                    "_stop": record["_stop"],
+                    "_time": record["_time"],
+                    "_value": record["_value"],
+                    "_field": record["_field"],
+                    "_measurement": record["_measurement"],
+                    "isError": record["isError"],
+                    "isRedirected": record["isRedirected"],
+                    "projectId": record["projectId"],
+                    "redirectInitiator": record["redirectInitiator"]
+                })
+
+        return output  # Возвращаем массив словарей, а не строку JSON
 
     except Exception as e:
-        print(f"Ошибка при выполнении запроса: {e}")  # Отладка ошибки запроса
+        print(f"Ошибка при выполнении запроса: {e}")
+        return []
 
     finally:
-        # Закрываем клиент после работы
+        # Закрываем клиент
         client.close()

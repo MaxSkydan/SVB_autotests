@@ -247,6 +247,18 @@ def test_audit_end_call_message_speech_service():
                     """)
     print(result_influx)
 
+    # Собираем записи в словарь по значению '_field'
+    required_fields = {"ani", "dnis"}
+    records = {record["_field"]: record for record in result_influx if record["_field"] in required_fields}
+
+    # Проверяем наличие всех необходимых записей
+    missing_fields = required_fields - records.keys()
+    assert not missing_fields, f"Не найдены записи для полей: {', '.join(missing_fields)}"
+
+    # Проверяем значения
+    assert str(records["ani"]["_value"]) == "7739", f"Ожидалось значение '7739', получено: {records['ani']['_value']}"
+    assert str(records["dnis"]["_value"]) == "8621", f"Ожидалось значение '8621', получено: {records['dnis']['_value']}"
+
 
 @pytestrail.case('C2362', 'C2376')
 def test_audit_user_redirect_call_without_number():
