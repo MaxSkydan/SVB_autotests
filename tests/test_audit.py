@@ -222,7 +222,7 @@ def test_audit_end_call_nlu():
     assert massage_json[0]['value'] == 'На все добре'
 
 
-@pytestrail.case('C2365')
+@pytestrail.case('C2365', 'C2375', 'C2836', 'C2837', 'C2838', 'C2839')
 def test_audit_end_call_message_speech_service():
     message = wrapper_audit_service("testdata/audit/main_message_to_audit.json",
                                     "end_call_message_speech_service")
@@ -245,10 +245,9 @@ def test_audit_end_call_message_speech_service():
                     from(bucket: "{INFLUXDB_BUCKET}")
                     |> range(start: -1h)
                     """)
-    print(result_influx)
 
     # Собираем записи в словарь по значению '_field'
-    required_fields = {"ani", "dnis"}
+    required_fields = {"ani", "dnis", "redirectNumber", "sessionId"}
     records = {record["_field"]: record for record in result_influx if record["_field"] in required_fields}
 
     # Проверяем наличие всех необходимых записей
@@ -258,6 +257,10 @@ def test_audit_end_call_message_speech_service():
     # Проверяем значения
     assert str(records["ani"]["_value"]) == "7739", f"Ожидалось значение '7739', получено: {records['ani']['_value']}"
     assert str(records["dnis"]["_value"]) == "8621", f"Ожидалось значение '8621', получено: {records['dnis']['_value']}"
+    assert str(records["redirectNumber"]["_value"]) == "7777", \
+        f"Ожидалось значение '7777', получено: {records['redirectNumber']['_value']}"
+    assert str(records["sessionId"]["_value"]) == "27603392-667f-4a00-ba87-9670636e6955", \
+        f"Ожидалось значение '27603392-667f-4a00-ba87-9670636e6955', получено: {records['sessionId']['_value']}"
 
 
 @pytestrail.case('C2362', 'C2376')
@@ -380,7 +383,7 @@ def test_audit_missing_number():
     assert not result
 
 
-@pytestrail.case('C2365')
+@pytestrail.case('C2835')
 def test_audit_end_call_speech_service():
     # Удаляем все записи из MySql
     execute_query_mysql("testdata/audit/sql_queries_audit.json","delete_records")
@@ -396,7 +399,6 @@ def test_audit_end_call_speech_service():
 
     result = execute_query_mysql("testdata/audit/sql_queries_audit.json",
                                  "end_call_speech_service")
-    print(result)
 
 
     assert result

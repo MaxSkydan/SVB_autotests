@@ -117,7 +117,7 @@ def execute_query_influx_db(influx_query):
                     "redirectInitiator": record["redirectInitiator"]
                 })
 
-        return output  # Возвращаем массив словарей, а не строку JSON
+        return output  # Возвращаем массив словарей
 
     except Exception as e:
         print(f"Ошибка при выполнении запроса: {e}")
