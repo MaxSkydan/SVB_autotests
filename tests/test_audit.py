@@ -222,7 +222,7 @@ def test_audit_end_call_nlu():
     assert massage_json[0]['value'] == 'На все добре'
 
 
-@pytestrail.case('C2365', 'C2375', 'C2836', 'C2837', 'C2838', 'C2839')
+@pytestrail.case('C2365', 'C2375', 'C2836', 'C2837', 'C2838', 'C2839', 'C2849')
 def test_audit_end_call_message_speech_service():
     message = wrapper_audit_service("testdata/audit/main_message_to_audit.json",
                                     "end_call_message_speech_service")
@@ -261,6 +261,7 @@ def test_audit_end_call_message_speech_service():
         f"Ожидалось значение '7777', получено: {records['redirectNumber']['_value']}"
     assert str(records["sessionId"]["_value"]) == "27603392-667f-4a00-ba87-9670636e6955", \
         f"Ожидалось значение '27603392-667f-4a00-ba87-9670636e6955', получено: {records['sessionId']['_value']}"
+    assert str(records["ani"]["projectId"]) == "1", f"Ожидалось значение '1', получено: {records['ani']['projectId']}"
 
 
 @pytestrail.case('C2362', 'C2376')
